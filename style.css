@@ -274,3 +274,56 @@ input::placeholder {
 .white-clear:hover {
   color: var(--VeryDarkDesaturatedBlue);
 }
+
+/* ================media /dark theme ====================*/
+@media only screen and (min-width: 700px) {
+  .bg {
+    background: url(./images/bg-desktop-dark.jpg);
+    background-size: cover;
+  }
+  .white-bg {
+    background: url(./images/bg-desktop-light.jpg);
+    background-size: cover;
+  }
+  .header {
+    width: 500px;
+  }
+  .box {
+    width: 500px;
+  }
+  #input {
+    width: 400px;
+  }
+  .filter-container {
+    display: flex;
+    justify-content: center;
+
+    flex-direction: row;
+    width: 500px;
+    border-radius: 0px 0px 10px 10px;
+    overflow: hidden;
+  }
+  .task-data {
+    border-radius: 0px 0px 10px 10px;
+    overflow: hidden;
+  }
+  .filter-btns {
+    border-radius: 0px 0px 10px 10px;
+    position: absolute;
+    overflow: hidden;
+  }
+  .btn {
+    z-index: 1111;
+  }
+  .clear {
+    position: absolute;
+
+    z-index: 1111;
+    margin-left: 30px;
+    margin-left: 400px;
+  }
+  .task-value {
+    /* position: absolute; */
+    z-index: 111;
+  }
+}
