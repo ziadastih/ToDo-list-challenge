@@ -12,7 +12,69 @@
       href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://kit.fontawesome.com/7b5c8c5ef7.js"
+      crossorigin="anonymous"
+    ></script>
     <title>TODO | list</title>
   </head>
-  <body></body>
+  <body>
+    <!-- =========top image===== -->
+    <div class="bg"></div>
+    <!-- ==========todo form -->
+    <div class="todo-form">
+      <!-- =========header========= -->
+      <div class="header">
+        <h1>TODO</h1>
+        <div class="icons">
+          <img src="./images/icon-sun.svg" alt="" class="sun" />
+          <img src="./images/icon-moon.svg" alt="" class="moon" />
+        </div>
+      </div>
+      <div class="input-container box">
+        <button class="circle" id="add-btn">
+          <img class="check" src="./images/icon-check.svg" alt="" />
+        </button>
+        <input
+          type="text"
+          id="input"
+          placeholder="create a new todo..."
+          maxlength="20"
+        />
+      </div>
+      <div class="list-container">
+        <article class="task-box box">
+          <div class="task-check">
+            <span class="circle completed">
+              <img class="check" src="./images/icon-check.svg" alt="" />
+            </span>
+            <p class="task">hello world</p>
+          </div>
+          <img class="remove-task" src="./images/icon-cross.svg" alt="" />
+        </article>
+        <article class="task-box box">
+          <div class="task-check">
+            <span class="circle completed">
+              <img class="check" src="./images/icon-check.svg" alt="" />
+            </span>
+            <p class="task">hello world</p>
+          </div>
+          <img class="remove-task" src="./images/icon-cross.svg" alt="" />
+        </article>
+      </div>
+      <div class="filter-container">
+        <div class="box task-data">
+          <p class="task-value">5 items left</p>
+          <p class="clear btn">clear completed</p>
+        </div>
+        <div class="filter-btns box">
+          <p class="all btn">all</p>
+          <p class="btn">active</p>
+          <p class="completed btn">completed</p>
+        </div>
+      </div>
+    </div>
+    <h3 class="drag-drop">Drag and drop to reoder list</h3>
+    <script class="app.js"></script>
+  </body>
 </html>
