@@ -64,7 +64,6 @@ body {
 .header img {
   cursor: pointer;
 }
-
 .moon {
   display: none;
 }
@@ -100,7 +99,7 @@ body {
   display: none;
 }
 
-#input {
+.input {
   margin-left: 15px;
   background-color: var(--VeryDarkDesaturatedBlue);
   border: none;
@@ -220,28 +219,15 @@ input::placeholder {
 .task-check:hover + .remove-task {
   opacity: 1;
 }
-.filter-btns p:hover {
+.btn:hover {
   color: var(--VeryLightGrayishBlue);
-}
-.clear:hover {
-  color: var(--VeryLightGrayishBlue);
-}
-
-/* ===========js class========== */
-.display-items {
-  display: flex;
-}
-.task-completed {
-  text-decoration: line-through;
-  color: var(--VeryDarkGrayishBlue);
-}
-.selected-filter {
-  color: var(--BrightBlue);
 }
 
 /*=========== white theme================== */
 .white-bg {
   background: url(./images/bg-mobile-light.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .white-box {
   background-color: var(--VeryLightGray);
@@ -258,20 +244,12 @@ input::placeholder {
 .white-circle:hover {
   border: 1px solid transparent;
   border-radius: 80px;
-  background-image: linear-gradient(
-      /* var(--VeryDarkDesaturatedBlue),
-          var(--VeryDarkDesaturatedBlue) */
-        var(--VeryLightGray),
-      var(--VeryLightGray)
-    ),
+  background-image: linear-gradient(var(--VeryLightGray), var(--VeryLightGray)),
     linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
   background-origin: border-box;
   background-clip: content-box, border-box;
 }
 .white-btn:hover {
-  color: var(--VeryDarkDesaturatedBlue);
-}
-.white-clear:hover {
   color: var(--VeryDarkDesaturatedBlue);
 }
 
@@ -326,4 +304,17 @@ input::placeholder {
     /* position: absolute; */
     z-index: 111;
   }
+}
+
+/* ===========js class========== */
+.display-items {
+  display: flex;
+}
+
+.task-completed {
+  text-decoration: line-through;
+  color: var(--VeryDarkGrayishBlue);
+}
+.selected-filter {
+  color: var(--BrightBlue);
 }
