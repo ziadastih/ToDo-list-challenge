@@ -9,12 +9,27 @@ const taskData = document.querySelector(".task-data");
 const taskValue = document.querySelector(".task-value");
 const filterBtns = document.querySelector(".filter-btns");
 const allBtn = document.querySelector(".all");
-const activeBtn = document.querySelector(".active");
-const completedTasksBtn = document.querySelector(".completed");
+const activeBtn = document.querySelector(".active-btn");
+const completedTaskBtn = document.querySelector(".completed-btn");
 const taskContainer = document.querySelector(".list-container");
 
 // ========= our task array==========
-const taskList = ["buy a shoes", "pass german", "talk andi"];
+
+const taskList = [];
+
+// =======================add tasks to the list ================
+// ============add item to the array from the input ==============
+const addTask = document.getElementById("add-btn");
+
+addTask.addEventListener("click", function () {
+  taskList.push({ content: input.value, status: "active" });
+  input.value = "";
+  displayList(taskList);
+  taskData.style.opacity = "1";
+  console.log(taskList);
+});
+
+// ==========================dom content load ===================
 
 window.addEventListener("DOMContentLoaded", function () {
   allBtn.classList.add("selected-filter");
@@ -39,7 +54,7 @@ function displayList(arr) {
       alt=""
     />
   </span>
-  <p class="task" id=${i}>${arr[i]}</p>
+  <p class="task" id=${i}>${arr[i].content}</p>
 </div>
 <img
   class="remove-task"
@@ -51,7 +66,7 @@ function displayList(arr) {
   }
 
   taskContainer.innerHTML = listItems;
-  taskValue.textContent = `${arr.length} items left`;
+  taskValue.textContent = `${arr.length} tasks left`;
   const taskText = document.querySelectorAll(".task");
   const removeBtns = document.querySelectorAll(".remove-task");
   const checkIcon = document.querySelectorAll(".check");
@@ -109,16 +124,20 @@ function displayList(arr) {
       box.classList.remove("white-box");
     });
   });
-  //   ============end of theme switch==========
+  //   ============end of theme switch================
 
-  //   =========completed tasks function======
+  //   =========completed tasks function / add bg for circle /show the close btn /cross the task..switch status inside the array======
+
   completedBtns.forEach(function (btn) {
     btn.addEventListener("click", function () {
+      console.log(taskList);
       if (!btn.classList.contains("circle-completed")) {
         btn.classList.add("circle-completed");
         taskText.forEach(function (task) {
           if (task.id == btn.id) {
             task.classList.add("task-completed");
+            let completedNum = parseInt(task.id);
+            taskList[completedNum].status = "completed";
           }
         });
         removeBtns.forEach(function (removeBtn) {
@@ -136,6 +155,9 @@ function displayList(arr) {
         taskText.forEach(function (task) {
           if (task.id == btn.id) {
             task.classList.remove("task-completed");
+            let number = parseInt(task.id);
+
+            taskList[number].status = "active";
           }
         });
         removeBtns.forEach(function (removeBtn) {

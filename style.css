@@ -327,11 +327,20 @@ input::placeholder {
     hsl(280, 87%, 65%)
   );
 }
+.circle-completed:hover {
+  background-image: linear-gradient(
+    to right,
+    hsl(192, 100%, 67%),
+    hsl(280, 87%, 65%)
+  );
+  border: 1px solid var(--LightGrayishBlue);
+}
 
 .task-completed {
   text-decoration: line-through;
   color: var(--VeryDarkGrayishBlue);
 }
+
 .selected-filter {
   color: var(--BrightBlue);
 }
