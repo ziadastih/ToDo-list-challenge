@@ -89,14 +89,19 @@ body {
   border-radius: 50%;
   margin-left: 40px;
   cursor: pointer;
-  background-color: transparent;
+  background-image: linear-gradient(
+    var(--VeryDarkDesaturatedBlue),
+    var(--VeryDarkDesaturatedBlue),
+    var(--VeryDarkDesaturatedBlue),
+    var(--VeryDarkDesaturatedBlue)
+  );
   transition: 300ms ease-in;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .check {
-  display: none;
+  opacity: 0;
 }
 
 .input {
@@ -240,7 +245,12 @@ input::placeholder {
 .white-task {
   color: var(--VeryDarkGrayishBlue);
 }
-
+.white-task-btn {
+  background-image: linear-gradient(white, white);
+}
+.white-circle {
+  background-image: linear-gradient(white, white);
+}
 .white-circle:hover {
   border: 1px solid transparent;
   border-radius: 80px;
@@ -310,6 +320,13 @@ input::placeholder {
 .display-items {
   display: flex;
 }
+.circle-completed {
+  background-image: linear-gradient(
+    to right,
+    hsl(192, 100%, 67%),
+    hsl(280, 87%, 65%)
+  );
+}
 
 .task-completed {
   text-decoration: line-through;
@@ -317,4 +334,7 @@ input::placeholder {
 }
 .selected-filter {
   color: var(--BrightBlue);
+}
+.show-opacity {
+  opacity: 1;
 }
