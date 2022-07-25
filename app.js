@@ -39,58 +39,103 @@ window.addEventListener("DOMContentLoaded", function () {
 
 // ======display item function and contains theme switch ================
 function displayList(arr) {
-  let listItems = "";
+  let id = new Date().getTime().toString();
+
   if (arr.length == 0) {
     taskData.style.opacity = "0";
   }
-  // ===========for loop to display our array
-
-  for (let i = 0; i < arr.length; i++) {
-    if (dark) {
-      listItems += `<article class="task-box box">
+  // ===========for loop to display our array depend which theme is======
+  let displayCompleted = arr.map(function (task) {
+    if (task.status === "completed" && dark === true) {
+      return `<article class="task-box box">
+    <div class="task-check">
+      <span class="circle completed circle-completed" id=${id}>
+        <img
+          class="check show-opacity"
+          id=${id}
+          src="./images/icon-check.svg"
+          alt=""
+        />
+      </span>
+      <p class="task task-completed" id=${id}>${task.content}</p>
+    </div>
+    <img
+      class="remove-task show-opacity"
+      id=${id}
+      src="./images/icon-cross.svg"
+      alt=""
+    />
+    </article>`;
+    } else if (task.status === "completed" && dark === false) {
+      return `<article class="task-box white-box box">
+        <div class="task-check">
+          <span class="circle white-circle completed circle-completed" id=${id}>
+             <img
+               class="check show-opacity"
+               id=${id}
+               src="./images/icon-check.svg"
+               alt=""
+             />
+           </span>
+           <p class="task white-task task-completed" id=${id}>${task.content}</p>
+         </div>
+         <img
+           class="remove-task show-opacity"
+           id=${id}
+           src="./images/icon-cross.svg"
+           alt=""
+         />
+         </article>`;
+    }
+  });
+  let displaytasks = arr.map(function (task) {
+    if (task.status === "active" && dark === true) {
+      return `<article class="task-box box">
 <div class="task-check">
-  <span class="circle completed" id=${i}>
+  <span class="circle completed" id=${id}>
     <img
       class="check"
-      id=${i}
+      id=${id}
       src="./images/icon-check.svg"
       alt=""
     />
   </span>
-  <p class="task" id=${i}>${arr[i].content}</p>
+  <p class="task" id=${id}>${task.content}</p>
 </div>
 <img
   class="remove-task"
-  id=${i}
+  id=${id}
   src="./images/icon-cross.svg"
   alt=""
 />
 </article>`;
-    } else {
-      listItems += `<article class="task-box white-box box">
-      <div class="task-check">
-        <span class="circle white-circle completed" id=${i}>
-          <img
-            class="check"
-            id=${i}
-            src="./images/icon-check.svg"
-            alt=""
-          />
-        </span>
-        <p class="task white-task" id=${i}>${arr[i].content}</p>
-      </div>
-      <img
-        class="remove-task"
-        id=${i}
-        src="./images/icon-cross.svg"
-        alt=""
-      />
-      </article>`;
+    } else if (task.status === "active" && dark === false) {
+      return `<article class="task-box white-box  box">
+          <div class="task-check">
+             <span class="circle completed white-circle" id=${id}>
+               <img
+                 class="check"
+                 id=${id}
+                 src="./images/icon-check.svg"
+                 alt=""
+               />
+             </span>
+             <p class="task white-task" id=${id}>${task.content}</p>
+           </div>
+           <img
+             class="remove-task"
+             id=${id}
+             src="./images/icon-cross.svg"
+             alt=""
+           />
+           </article>`;
     }
-  }
+  });
+  displayCompleted = displayCompleted.join("");
+  displaytasks = displaytasks.join("");
 
-  taskContainer.innerHTML = listItems;
-  taskValue.textContent = `${arr.length} tasks left`;
+  taskContainer.innerHTML = `${displaytasks} ${displayCompleted}`;
+  taskValue.textContent = `${displaytasks.length} tasks left`;
   const taskText = document.querySelectorAll(".task");
   const removeBtns = document.querySelectorAll(".remove-task");
   const checkIcon = document.querySelectorAll(".check");
@@ -153,54 +198,37 @@ function displayList(arr) {
 
   //   ============end of theme switch================
 
-  //   =========completed tasks function / add bg for circle /show the close btn /cross the task..switch status inside the array======
-
-  completedBtns.forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      console.log(taskList);
-      if (!btn.classList.contains("circle-completed")) {
-        btn.classList.add("circle-completed");
-        taskText.forEach(function (task) {
-          if (task.id == btn.id) {
-            task.classList.add("task-completed");
-            let completedNum = parseInt(task.id);
-            taskList[completedNum].status = "completed";
-          }
-        });
-        removeBtns.forEach(function (removeBtn) {
-          if (removeBtn.id == btn.id) {
-            removeBtn.classList.add("show-opacity");
-          }
-        });
-        checkIcon.forEach(function (icon) {
-          if (icon.id == btn.id) {
-            icon.classList.add("show-opacity");
-          }
-        });
-      } else {
-        btn.classList.remove("circle-completed");
-        taskText.forEach(function (task) {
-          if (task.id == btn.id) {
-            task.classList.remove("task-completed");
-            let number = parseInt(task.id);
-
-            taskList[number].status = "active";
-          }
-        });
-        removeBtns.forEach(function (removeBtn) {
-          if (removeBtn.id == btn.id) {
-            removeBtn.classList.remove("show-opacity");
-          }
-        });
-        checkIcon.forEach(function (icon) {
-          if (icon.id == btn.id) {
-            icon.classList.remove("show-opacity");
-          }
-        });
-      }
+  // ==================filter btns===================
+  // ==================all btn filter========================
+  allBtn.addEventListener("click", function () {
+    displayList(taskList);
+    completedTaskBtn.classList.remove("selected-filter");
+    allBtn.classList.add("selected-filter");
+    activeBtn.classList.remove("selected-filter");
+  });
+  // ==============active btn filter===============================
+  activeBtn.addEventListener("click", function () {
+    const activetasks = taskList.filter(function (task) {
+      return task.status === "active";
     });
+    activeBtn.classList.add("selected-filter");
+    completedTaskBtn.classList.remove("selected-filter");
+    allBtn.classList.remove("selected-filter");
+
+    displayList(activetasks);
+  });
+  completedTaskBtn.addEventListener("click", function () {
+    const completedTaskArr = taskList.filter(function (task) {
+      return task.status === "completed";
+    });
+    console.log(completedTaskArr);
+    completedTaskBtn.classList.add("selected-filter");
+    allBtn.classList.remove("selected-filter");
+    activeBtn.classList.remove("selected-filter");
+    displayList(completedTaskArr);
   });
 }
+
 // ================timeout for check add-input==============
 
 function addInputCheck() {
