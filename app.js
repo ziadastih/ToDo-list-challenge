@@ -12,21 +12,22 @@ const allBtn = document.querySelector(".all");
 const activeBtn = document.querySelector(".active-btn");
 const completedTaskBtn = document.querySelector(".completed-btn");
 const taskContainer = document.querySelector(".list-container");
+const checkInputIcon = document.querySelector(".check-input");
 
 // ========= our task array==========
 
 const taskList = [];
-
+let dark = true;
 // =======================add tasks to the list ================
-// ============add item to the array from the input ==============
 const addTask = document.getElementById("add-btn");
-
 addTask.addEventListener("click", function () {
-  taskList.push({ content: input.value, status: "active" });
-  input.value = "";
-  displayList(taskList);
-  taskData.style.opacity = "1";
-  console.log(taskList);
+  if (input.value.length > 0) {
+    taskList.push({ content: input.value, status: "active" });
+    input.value = "";
+    displayList(taskList);
+    taskData.style.opacity = "1";
+    addInputCheck();
+  }
 });
 
 // ==========================dom content load ===================
@@ -43,8 +44,10 @@ function displayList(arr) {
     taskData.style.opacity = "0";
   }
   // ===========for loop to display our array
+
   for (let i = 0; i < arr.length; i++) {
-    listItems += `<article class="task-box box">
+    if (dark) {
+      listItems += `<article class="task-box box">
 <div class="task-check">
   <span class="circle completed" id=${i}>
     <img
@@ -63,6 +66,27 @@ function displayList(arr) {
   alt=""
 />
 </article>`;
+    } else {
+      listItems += `<article class="task-box white-box box">
+      <div class="task-check">
+        <span class="circle white-circle completed" id=${i}>
+          <img
+            class="check"
+            id=${i}
+            src="./images/icon-check.svg"
+            alt=""
+          />
+        </span>
+        <p class="task white-task" id=${i}>${arr[i].content}</p>
+      </div>
+      <img
+        class="remove-task"
+        id=${i}
+        src="./images/icon-cross.svg"
+        alt=""
+      />
+      </article>`;
+    }
   }
 
   taskContainer.innerHTML = listItems;
@@ -75,6 +99,7 @@ function displayList(arr) {
 
   //   ==============theme switch ===============
   sunBtn.addEventListener("click", function () {
+    dark = false;
     moonBtn.style.display = "flex";
     sunBtn.style.display = "none";
     document.body.style.backgroundColor = "var(--VeryLightGrayishBlue)";
@@ -100,6 +125,7 @@ function displayList(arr) {
     });
   });
   moonBtn.addEventListener("click", function () {
+    dark = true;
     document.body.style.backgroundColor = "var(--VeryDarkBlue)";
     moonBtn.style.display = "none";
     sunBtn.style.display = "flex";
@@ -124,6 +150,7 @@ function displayList(arr) {
       box.classList.remove("white-box");
     });
   });
+
   //   ============end of theme switch================
 
   //   =========completed tasks function / add bg for circle /show the close btn /cross the task..switch status inside the array======
@@ -173,4 +200,14 @@ function displayList(arr) {
       }
     });
   });
+}
+// ================timeout for check add-input==============
+
+function addInputCheck() {
+  addTask.classList.add("circle-completed");
+  checkInputIcon.classList.add("show-opacity");
+  setTimeout(function () {
+    addTask.classList.remove("circle-completed");
+    checkInputIcon.classList.remove("show-opacity");
+  }, 300);
 }
