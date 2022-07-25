@@ -22,11 +22,18 @@ let dark = true;
 const addTask = document.getElementById("add-btn");
 addTask.addEventListener("click", function () {
   if (input.value.length > 0) {
-    taskList.push({ content: input.value, status: "active" });
+    let id = new Date().getTime().toString();
+    taskList.push({ content: input.value, status: "active", id: id });
     input.value = "";
-    displayList(taskList);
+
+    displayList(taskList, id);
+    allBtn.classList.add("selected-filter");
+    activeBtn.classList.remove("selected-filter");
+    completedTaskBtn.classList.remove("selected-filter");
     taskData.style.opacity = "1";
     addInputCheck();
+
+    console.log(taskList);
   }
 });
 
@@ -38,30 +45,30 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 // ======display item function and contains theme switch ================
-function displayList(arr) {
-  let id = new Date().getTime().toString();
-
+function displayList(arr, id) {
   if (arr.length == 0) {
     taskData.style.opacity = "0";
+  } else {
+    taskData.style.opacity = "1";
   }
   // ===========for loop to display our array depend which theme is======
   let displayCompleted = arr.map(function (task) {
     if (task.status === "completed" && dark === true) {
       return `<article class="task-box box">
     <div class="task-check">
-      <span class="circle completed circle-completed" id=${id}>
+      <span class="circle completed circle-completed" id=${task.id}>
         <img
           class="check show-opacity"
-          id=${id}
+          id=${task.id}
           src="./images/icon-check.svg"
           alt=""
         />
       </span>
-      <p class="task task-completed" id=${id}>${task.content}</p>
+      <p class="task task-completed" id=${task.id}>${task.content}</p>
     </div>
     <img
       class="remove-task show-opacity"
-      id=${id}
+      id=${task.id}
       src="./images/icon-cross.svg"
       alt=""
     />
@@ -69,42 +76,43 @@ function displayList(arr) {
     } else if (task.status === "completed" && dark === false) {
       return `<article class="task-box white-box box">
         <div class="task-check">
-          <span class="circle white-circle completed circle-completed" id=${id}>
+          <span class="circle white-circle completed circle-completed" id=${task.id}>
              <img
                class="check show-opacity"
-               id=${id}
+               id=${task.id}
                src="./images/icon-check.svg"
                alt=""
              />
            </span>
-           <p class="task white-task task-completed" id=${id}>${task.content}</p>
+           <p class="task white-task task-completed" id=${task.id}>${task.content}</p>
          </div>
          <img
            class="remove-task show-opacity"
-           id=${id}
+           id=${task.id}
            src="./images/icon-cross.svg"
            alt=""
          />
          </article>`;
     }
   });
+  // ====================map for the active tasks and for the displayed tasks with id related to time so we get random number so we facilitate the work for other functions
   let displaytasks = arr.map(function (task) {
     if (task.status === "active" && dark === true) {
       return `<article class="task-box box">
 <div class="task-check">
-  <span class="circle completed" id=${id}>
+  <span class="circle completed" id=${task.id}>
     <img
       class="check"
-      id=${id}
+      id=${task.id}
       src="./images/icon-check.svg"
       alt=""
     />
   </span>
-  <p class="task" id=${id}>${task.content}</p>
+  <p class="task" id=${task.id}>${task.content}</p>
 </div>
 <img
   class="remove-task"
-  id=${id}
+  id=${task.id}
   src="./images/icon-cross.svg"
   alt=""
 />
@@ -112,19 +120,19 @@ function displayList(arr) {
     } else if (task.status === "active" && dark === false) {
       return `<article class="task-box white-box  box">
           <div class="task-check">
-             <span class="circle completed white-circle" id=${id}>
+             <span class="circle completed white-circle" id=${task.id}>
                <img
                  class="check"
-                 id=${id}
+                 id=${task.id}
                  src="./images/icon-check.svg"
                  alt=""
                />
              </span>
-             <p class="task white-task" id=${id}>${task.content}</p>
+             <p class="task white-task" id=${task.id}>${task.content}</p>
            </div>
            <img
              class="remove-task"
-             id=${id}
+             id=${task.id}
              src="./images/icon-cross.svg"
              alt=""
            />
@@ -134,13 +142,70 @@ function displayList(arr) {
   displayCompleted = displayCompleted.join("");
   displaytasks = displaytasks.join("");
 
-  taskContainer.innerHTML = `${displaytasks} ${displayCompleted}`;
-  taskValue.textContent = `${displaytasks.length} tasks left`;
+  taskContainer.innerHTML = `${displayCompleted} ${displaytasks} `;
+  taskValue.textContent = `${displayList.length} tasks left`;
   const taskText = document.querySelectorAll(".task");
   const removeBtns = document.querySelectorAll(".remove-task");
   const checkIcon = document.querySelectorAll(".check");
   const taskBox = document.querySelectorAll(".task-box");
   const completedBtns = document.querySelectorAll(".completed");
+
+  // ==========when finish task click function to cross it and switch it status ==============================
+  completedBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (!btn.classList.contains("circle-completed")) {
+        btn.classList.add("circle-completed");
+        // =====show the icon in the circle and give bg
+        checkIcon.forEach(function (check) {
+          if (check.id === btn.id) {
+            check.classList.add("show-opacity");
+          }
+        });
+        // =====cross the text and find index to switch status
+        taskText.forEach(function (task) {
+          if (task.id === btn.id) {
+            task.classList.add("task-completed");
+            const index = taskList.findIndex(function (element) {
+              return element.content === task.textContent;
+            });
+            if (index !== -1) {
+              taskList[index].status = "completed";
+            }
+          }
+        });
+        removeBtns.forEach(function (removeBtn) {
+          if (removeBtn.id === btn.id) {
+            removeBtn.classList.add("show-opacity");
+          }
+        });
+      } else {
+        btn.classList.remove("circle-completed");
+        // =====show the icon in the circle and give bg
+        checkIcon.forEach(function (check) {
+          if (check.id === btn.id) {
+            check.classList.remove("show-opacity");
+          }
+        });
+        // =====cross the text and find index to switch status
+        taskText.forEach(function (task) {
+          if (task.id === btn.id) {
+            task.classList.remove("task-completed");
+            const index = taskList.findIndex(function (element) {
+              return element.content === task.textContent;
+            });
+            if (index !== -1) {
+              taskList[index].status = "active";
+            }
+          }
+        });
+        removeBtns.forEach(function (removeBtn) {
+          if (removeBtn.id === btn.id) {
+            removeBtn.classList.remove("show-opacity");
+          }
+        });
+      }
+    });
+  });
 
   //   ==============theme switch ===============
   sunBtn.addEventListener("click", function () {
@@ -217,6 +282,7 @@ function displayList(arr) {
 
     displayList(activetasks);
   });
+  // ==========completed task filter=====================================
   completedTaskBtn.addEventListener("click", function () {
     const completedTaskArr = taskList.filter(function (task) {
       return task.status === "completed";
