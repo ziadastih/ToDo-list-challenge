@@ -143,7 +143,11 @@ function displayList(arr, id) {
   displaytasks = displaytasks.join("");
 
   taskContainer.innerHTML = `${displayCompleted} ${displaytasks} `;
-  taskValue.textContent = `${displayList.length} tasks left`;
+  // ==========task value filter which ones are active ==========
+  const activetasks = taskList.filter(function (task) {
+    return task.status === "active";
+  });
+  taskValue.textContent = `${activetasks.length} tasks active`;
   const taskText = document.querySelectorAll(".task");
   const removeBtns = document.querySelectorAll(".remove-task");
   const checkIcon = document.querySelectorAll(".check");
@@ -207,6 +211,32 @@ function displayList(arr, id) {
     });
   });
 
+  // =============remove task btn ===================
+  removeBtns.forEach(function (removeBtn) {
+    removeBtn.addEventListener("click", function () {
+      // =======get the index of the id in order to remove it from the array
+      let index = taskList.findIndex(function (element) {
+        return element.id === removeBtn.id;
+      });
+      if (index !== -1) {
+        taskList.splice(index, 1);
+        // =========depends what filter we have open we want different tasks displayed so we do it with if statement depend on the class.====
+        if (completedTaskBtn.classList.contains("selected-filter")) {
+          const completedTaskArr = taskList.filter(function (task) {
+            return task.status === "completed";
+          });
+          displayList(completedTaskArr);
+        } else if (activeBtn.classList.contains("selected-filter")) {
+          const activetasks = taskList.filter(function (task) {
+            return task.status === "active";
+          });
+          displayList(activetasks);
+        } else {
+          displayList(taskList);
+        }
+      }
+    });
+  });
   //   ==============theme switch ===============
   sunBtn.addEventListener("click", function () {
     dark = false;
@@ -267,6 +297,7 @@ function displayList(arr, id) {
   // ==================all btn filter========================
   allBtn.addEventListener("click", function () {
     displayList(taskList);
+
     completedTaskBtn.classList.remove("selected-filter");
     allBtn.classList.add("selected-filter");
     activeBtn.classList.remove("selected-filter");
@@ -281,6 +312,7 @@ function displayList(arr, id) {
     allBtn.classList.remove("selected-filter");
 
     displayList(activetasks);
+    taskValue.textContent = `${activetasks.length} tasks active`;
   });
   // ==========completed task filter=====================================
   completedTaskBtn.addEventListener("click", function () {
@@ -292,6 +324,7 @@ function displayList(arr, id) {
     allBtn.classList.remove("selected-filter");
     activeBtn.classList.remove("selected-filter");
     displayList(completedTaskArr);
+    taskValue.textContent = `${completedTaskArr.length} tasks completed`;
   });
 }
 

@@ -216,6 +216,7 @@ input::placeholder {
     ),
     linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
   background-origin: border-box;
+  -webkit-background-clip: content-box, border-box;
   background-clip: content-box, border-box;
 }
 
@@ -257,6 +258,7 @@ input::placeholder {
   background-image: linear-gradient(var(--VeryLightGray), var(--VeryLightGray)),
     linear-gradient(to right, hsl(192, 100%, 67%), hsl(280, 87%, 65%));
   background-origin: border-box;
+  -webkit-background-clip: content-box, border-box;
   background-clip: content-box, border-box;
 }
 .white-btn:hover {
