@@ -349,3 +349,6 @@ input::placeholder {
 .show-opacity {
   opacity: 1;
 }
+.dragging {
+  opacity: 0.5;
+}

@@ -22,6 +22,7 @@ let dark = true;
 const addTask = document.getElementById("add-btn");
 addTask.addEventListener("click", function () {
   if (input.value.length > 0) {
+    // ======CREATE ID FOR EVERY TASK===================
     let id = new Date().getTime().toString();
     taskList.push({ content: input.value, status: "active", id: id });
     input.value = "";
@@ -52,10 +53,11 @@ function displayList(arr, id) {
   } else {
     taskData.style.opacity = "1";
   }
-  // ===========for loop to display our array depend which theme is======
+
+  // ===============MAP AROUND 2 THE SAME ARRAY SO WE GET THE COMPLETED WITH DIFFERENT STYLING AND THE ACTIVE WITH THE INITIAL ONE AND HAVE CONDITION FOR THE THEMES SO IT DOESNT CHANGE WHEN WE ADD A NEW ITEM.THEN JOIN BOTH AND ADD THEM TO TASK CONTAINER
   let displayCompleted = arr.map(function (task) {
     if (task.status === "completed" && dark === true) {
-      return `<article class="task-box box">
+      return `<article class="task-box box" draggable="true">
     <div class="task-check">
       <span class="circle completed circle-completed" id=${task.id}>
         <img
@@ -75,7 +77,7 @@ function displayList(arr, id) {
     />
     </article>`;
     } else if (task.status === "completed" && dark === false) {
-      return `<article class="task-box white-box box">
+      return `<article class="task-box white-box box" draggable="true">
         <div class="task-check">
           <span class="circle white-circle completed circle-completed" id=${task.id}>
              <img
@@ -96,10 +98,10 @@ function displayList(arr, id) {
          </article>`;
     }
   });
-  // ====================map for the active tasks and for the displayed tasks with id related to time so we get random number so we facilitate the work for other functions
+
   let displaytasks = arr.map(function (task) {
     if (task.status === "active" && dark === true) {
-      return `<article class="task-box box">
+      return `<article class="task-box box" draggable="true">
 <div class="task-check">
   <span class="circle completed" id=${task.id}>
     <img
@@ -119,7 +121,7 @@ function displayList(arr, id) {
 />
 </article>`;
     } else if (task.status === "active" && dark === false) {
-      return `<article class="task-box white-box  box">
+      return `<article class="task-box white-box  box" draggable="true">
           <div class="task-check">
              <span class="circle completed white-circle" id=${task.id}>
                <img
@@ -148,14 +150,14 @@ function displayList(arr, id) {
   const activetasks = taskList.filter(function (task) {
     return task.status === "active";
   });
-  taskValue.textContent = `${activetasks.length} tasks active`;
+  taskValue.textContent = `${activetasks.length} task active`;
   const taskText = document.querySelectorAll(".task");
   const removeBtns = document.querySelectorAll(".remove-task");
   const checkIcon = document.querySelectorAll(".check");
   const taskBox = document.querySelectorAll(".task-box");
   const completedBtns = document.querySelectorAll(".completed");
 
-  // ==========when finish task click function to cross it and switch it status ==============================
+  // ==========MARK TASK OR UNMARK IT FUNCTION ==============================
   completedBtns.forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (!btn.classList.contains("circle-completed")) {
@@ -214,7 +216,7 @@ function displayList(arr, id) {
     });
   });
 
-  // =============remove task btn ===================
+  // =============REMOVE TASK BTN ===================
   removeBtns.forEach(function (removeBtn) {
     removeBtn.addEventListener("click", function () {
       // =======get the index of the id in order to remove it from the array
@@ -241,7 +243,7 @@ function displayList(arr, id) {
       }
     });
   });
-  //   ==============theme switch ===============
+  //   ==============THEME SWITCH ===============
   sunBtn.addEventListener("click", function () {
     dark = false;
     moonBtn.style.display = "flex";
@@ -295,8 +297,8 @@ function displayList(arr, id) {
     });
   });
 
-  //   ============end of theme switch================
-  // ============clear completed btn ======================
+  //   ============END oF THEME SWITCH =====================
+  // ============CLEAR COMPLETED TASKS FUNCTION ======================
   const clearCompleted = document.querySelector(".clear");
 
   clearCompleted.addEventListener("click", function () {
@@ -309,7 +311,7 @@ function displayList(arr, id) {
     console.log(taskList);
   });
 
-  // ==================filter btns===================
+  // ==================FILTER  BTNS ===================
   // ==================all btn filter========================
   allBtn.addEventListener("click", function () {
     displayList(taskList);
@@ -342,6 +344,35 @@ function displayList(arr, id) {
     displayList(completedTaskArr);
     taskValue.textContent = `${completedTaskArr.length} tasks completed`;
   });
+
+  // ================DRAG AND DROP ============
+  // ====change opacity to notice which one we are dragging
+  taskBox.forEach(function (task) {
+    task.addEventListener("dragstart", function () {
+      task.classList.add("dragging");
+    });
+  });
+  taskBox.forEach(function (task) {
+    task.addEventListener("dragend", function () {
+      task.classList.remove("dragging");
+    });
+  });
+  // =========task container drag event=====
+  taskContainer.addEventListener("dragover", function (e) {
+    e.preventDefault();
+
+    const draggableTask = document.querySelector(".dragging");
+    const afterElement = getDragAfterElement(taskContainer, e.clientY);
+    if (afterElement == null) {
+      taskContainer.appendChild(draggableTask);
+    } else {
+      taskContainer.insertBefore(draggableTask, afterElement);
+    }
+    console.log(afterElement);
+  });
+
+  //
+  // ==========function getdragafterelement....=============
 }
 
 // ================timeout for check add-input==============
@@ -354,3 +385,59 @@ function addInputCheck() {
     checkInputIcon.classList.remove("show-opacity");
   }, 300);
 }
+
+function getDragAfterElement(container, y) {
+  // ==define the elements in that box just not the one we are dragging, then creating these items as an array
+  const draggableElements = [
+    ...container.querySelectorAll(".task-box:not(.dragging)"),
+  ];
+
+  return draggableElements.reduce(
+    (closest, task) => {
+      const box = task.getBoundingClientRect();
+
+      const offset = y - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: task };
+      } else {
+        return closest;
+      }
+    },
+    { offset: Number.NEGATIVE_INFINITY }
+  ).element;
+}
+
+// ===========steps in this challenge to pay attention for==========
+
+// 1. start with a good order finish easy things such as theme switch
+// 2.pay attention even though you adjusted theme switch when adding a task you will face issue so you need to set an if statement for every theme
+// 3.instead of a for loop start using arr.map under certain condition so we can give the completed tasks different classes and join them all
+// 4.comment all code and make sure the variables you are chosing can be accessed
+// 5.use arr.filter to facilitate creating new array and diplaying it
+// 6.regarding local storage make sure at any change we do we need to update it
+
+// =====================Drag and DROP points===========================
+
+// 1.give the <div  draggable = 'true'>
+// 2.for each task give eventlistener ('dragstart') ('dragend')
+// 3.for the container give eventListener('dragover')
+// 4.e.preventDefault() so we remove the icon on our cursor
+// 5.on click get the element that have the class we gave when we drag so that way we have only 1 element and we facilitate our work
+// 6.container.appendChild(element),this put the element at the end of the container whenever we drag it
+// 7.create a function that determine our mouse y position and determine which element is directly after our dragged element
+// 8.the function can have parameters,the container and  the y ,container is the container that we have this drag stat activated in it ,and the y is the e.client which is equal to the user mouse position
+// 9.inside the function we need to create an array which we can use [...container.queryselectorAll('task-box:not(.dragging)')],,,,,,,which means get the element inside the container make them an array just dont include the one that have the dragging class on
+// 10.we have to return on that function the array we created in form of array.reduce
+// 11.the reduce will help us indicate which single element is directly after our mouse cursor depending on the e.client
+// 12. set the second parameter in the reduce an offset: number.negative_infinity number so it is always higher than all
+// 13.the 2 parameters we use are the (closesr,task) the closest show which offset is the closest and the task shows what task it is
+// 14.the get a varialble that give us a rectangle(x,y position and width and height ,top,left,right,bottom) for a box using task.BoundungClientRect()
+// 15.we want to measure from the middle of our box,so when we hover and the item is past the middle we do a change
+// 16.to do that => get the offset which it will be the difference between the center of the box and the mouse cursor use offset = e.client - box.top - box.height/2(cz we need the center of the box)
+// 17.when we console log it we will see when we are above an element we have a negative number and when between 2 we have pos and neg, and when at the bottom we have only positive
+// 18.then we give if statement stating the offset < 0 ,cz otherwise we will use the apendChild that we stated above
+// 19. if (offset < 0 && offset > closest.offset) mean our offset is closer to than whatever offset we currently have then we know what is our currently closest offset ,and the closest start with the infinity that we set and we need negative infinity cz our numbers are negative
+// 20.return an object that includes {offset: offset ,element:task} task we are currently on
+// 21. esle if not then we return the closest that we already have set by default...number.neg....
+// 22.call this function in case it is defined ,if not call the appenfChild that we set so that way if the item is in the end of the container it will be set directly there if not it will determine the element and we use CONTAINER.INSERTBEFORE(TASK THAT IS BEING DRAGED,AFTERELEMENT(THE ELEMENT THAT WE ARE ABOVE IT))
