@@ -16,32 +16,33 @@ const checkInputIcon = document.querySelector(".check-input");
 
 // ========= our task array==========
 
-const taskList = [];
+let taskList = [];
 let dark = true;
-// =======================add tasks to the list ================
+// =======================add tasks to the list and local storage ================
 const addTask = document.getElementById("add-btn");
 addTask.addEventListener("click", function () {
   if (input.value.length > 0) {
     let id = new Date().getTime().toString();
     taskList.push({ content: input.value, status: "active", id: id });
     input.value = "";
-
+    localStorage.setItem("taskList", JSON.stringify(taskList));
     displayList(taskList, id);
     allBtn.classList.add("selected-filter");
     activeBtn.classList.remove("selected-filter");
     completedTaskBtn.classList.remove("selected-filter");
     taskData.style.opacity = "1";
     addInputCheck();
-
-    console.log(taskList);
   }
 });
 
-// ==========================dom content load ===================
-
+// ==========================dom content load and displaying the local storage  ===================
+const taskFromLocalS = JSON.parse(this.localStorage.getItem("taskList"));
+if (taskFromLocalS) {
+  taskList = taskFromLocalS;
+  displayList(taskList);
+}
 window.addEventListener("DOMContentLoaded", function () {
   allBtn.classList.add("selected-filter");
-  displayList(taskList);
 });
 
 // ======display item function and contains theme switch ================
@@ -174,6 +175,7 @@ function displayList(arr, id) {
             });
             if (index !== -1) {
               taskList[index].status = "completed";
+              localStorage.setItem("taskList", JSON.stringify(taskList));
             }
           }
         });
@@ -199,6 +201,7 @@ function displayList(arr, id) {
             });
             if (index !== -1) {
               taskList[index].status = "active";
+              localStorage.setItem("taskList", JSON.stringify(taskList));
             }
           }
         });
@@ -220,6 +223,7 @@ function displayList(arr, id) {
       });
       if (index !== -1) {
         taskList.splice(index, 1);
+        localStorage.setItem("taskList", JSON.stringify(taskList));
         // =========depends what filter we have open we want different tasks displayed so we do it with if statement depend on the class.====
         if (completedTaskBtn.classList.contains("selected-filter")) {
           const completedTaskArr = taskList.filter(function (task) {
@@ -292,6 +296,18 @@ function displayList(arr, id) {
   });
 
   //   ============end of theme switch================
+  // ============clear completed btn ======================
+  const clearCompleted = document.querySelector(".clear");
+
+  clearCompleted.addEventListener("click", function () {
+    // ==========filter our main array and the displaying it ,also setting it as to overwrite the old one in local storage
+    taskList = taskList.filter(function (element) {
+      return element.status === "active";
+    });
+    localStorage.setItem("taskList", JSON.stringify(taskList));
+    displayList(taskList);
+    console.log(taskList);
+  });
 
   // ==================filter btns===================
   // ==================all btn filter========================
