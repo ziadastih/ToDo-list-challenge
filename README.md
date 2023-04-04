@@ -2,4 +2,4 @@
 todo app ,front end mentor for js practice 
 ![todolist](design/desktop-preview.jpg)
 
-#no ...
+# no
